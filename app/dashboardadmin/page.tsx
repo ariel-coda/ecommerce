@@ -701,9 +701,9 @@ export default function AdminDashboard(): JSX.Element {
                 <br />• <strong>Product View</strong> : Enregistré quand un
                 utilisateur consulte une page produit
                 <br />• <strong>Add to Cart</strong> : Enregistré quand
-                l'utilisateur clique sur "Ajouter au panier"
+                l&apos;utilisateur clique sur "Ajouter au panier"
                 <br />• <strong>Conversions</strong> : Enregistré quand
-                l'utilisateur clique sur "Commander sur WhatsApp"
+                l&apos;utilisateur clique sur "Commander sur WhatsApp"
                 <br />• <strong>Search</strong> : Enregistré à chaque recherche
                 de produit
                 <br />• <strong>Category Filter</strong> : Enregistré quand un
