@@ -12,7 +12,7 @@ import {
   AlertCircle,
   Upload,
 } from "lucide-react";
-import { productService, analyticsService} from "../lib/supabase";
+import { productService, analyticsService } from "../lib/supabase";
 
 export default function AdminDashboard(): JSX.Element {
   const [currentTab, setCurrentTab] = useState<string>("dashboard");
@@ -115,17 +115,7 @@ export default function AdminDashboard(): JSX.Element {
           setLoading(false);
           return;
         }
-        await productService.createProduct(
-          {
-            name: formData.name,
-            category: formData.category,
-            price: parseInt(formData.price),
-            stock: parseInt(formData.stock),
-            description: formData.description,
-          },
-          formData.image,
-          productData
-        );
+        await productService.createProduct(productData, formData.image);
       }
 
       await loadProducts();

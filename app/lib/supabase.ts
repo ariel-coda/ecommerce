@@ -73,21 +73,47 @@ export const productService = {
     return data;
   },
 
-  // Ajouter un produit
-  async createProduct(
-p0: { name: string; category: string; price: number; stock: number; description: string; }, image: File, product: Omit<Product, "id" | "created_at" | "updated_at">  ): Promise<Product | null> {
-    const { data, error } = await supabase
-      .from("products")
-      .insert([product])
-      .select()
-      .single();
+async createProduct(
+  productData: { name: string; category: string; price: number; stock: number; description: string; }, image: File): Promise<Product | null> {
+  try {
+    if (!image) throw new Error("Image requise");
 
-    if (error) {
-      console.error("Erreur lors de la création du produit:", error);
-      return null;
-    }
+    // Générer un nom unique pour l'image
+    const fileExt = image.name.split(".").pop();
+    const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+    const filePath = `products/${fileName}`;
+
+    // Upload dans le bucket 'produit'
+    const { error: uploadError } = await supabase.storage
+      .from("products")
+      .upload(filePath, image);
+
+    if (uploadError) throw uploadError;
+
+    // Récupérer l'URL publique
+    const { data: urlData } = supabase.storage
+      .from("products")
+      .getPublicUrl(filePath);
+
+    const newProduct = {
+      ...productData,
+      image: urlData.publicUrl, // on stocke l'URL
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    // Insérer dans la table products
+    const { data, error } = await supabase.from("products").insert([newProduct]).select().single();
+
+    if (error) throw error;
+
     return data;
-  },
+  } catch (err) {
+    console.error("Erreur création produit:", err);
+    return null;
+  }
+},
+
 
   // Modifier un produit
   async updateProduct(
